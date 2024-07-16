@@ -15,7 +15,7 @@ Install
 
 The plugin doesn't require additional modules.
 Upload the plugin somewhere and appent the absolute path to your pibooth.cfg (~/.config/pigooth/pibooth.cfg) to parameter 'plugins'
-aka: plugins = "/home/pi/pibooth/pibooth-myip/pibooth_myip.py"
+aka: plugins = "/home/pi/pibooth/pibooth-gallery/pibooth_gallery.py"
 
 Configuration
 -------------
