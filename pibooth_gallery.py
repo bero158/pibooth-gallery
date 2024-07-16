@@ -66,7 +66,7 @@ def state_wait_enter(cfg, app, win):
     if not hasattr(app,"plugin_gallery"):
         app.plugin_gallery = {
             "start": time.time(),
-            "active": False,
+            "active": False, #informs other plugins that the gallery is active
             "cfg": {"delay": float(cfg.get(SECTION, GALLERY_DELAY )),
                     "folder":fix_abs_path(cfg.get(SECTION, GALLERY_FOLDER ))}
         }    
@@ -81,13 +81,7 @@ def state_wait_exit(cfg, app, win):
 def state_wait_do(app, win, events):
     if hasattr(app,"plugin_gallery"):
         now = time.time()
-        if pygame.MOUSEBUTTONDOWN in [d.type for d in events]: #mouseclick
-                app.plugin_gallery["start"] = now
-                if "gallery" in app.plugin_gallery:
-                    del app.plugin_gallery["gallery"]
-                    app.plugin_gallery["active"] = False
-                return
-
+        
         if ( now - app.plugin_gallery["start"] > app.plugin_gallery["cfg"]["delay"]):
             if not "gallery" in app.plugin_gallery:
                 LOGGER.debug(f"{PLUGIN_NAME} - Starting gallery" )
@@ -95,3 +89,8 @@ def state_wait_do(app, win, events):
                 app.plugin_gallery["active"] = True
             app.plugin_gallery["gallery"].do()
     
+            if pygame.MOUSEBUTTONDOWN in [d.type for d in events]: #mouseclick detection
+                app.plugin_gallery["start"] = now 
+                if "gallery" in app.plugin_gallery: #closing the gallery
+                    del app.plugin_gallery["gallery"]
+                    app.plugin_gallery["active"] = False
