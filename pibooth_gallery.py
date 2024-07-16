@@ -88,6 +88,7 @@ def state_wait_do(app, win, events):
 
         if ( now - app.plugin_gallery["start"] > app.plugin_gallery["cfg"]["delay"]):
             if not "gallery" in app.plugin_gallery:
+                LOGGER.debug(f"{PLUGIN_NAME} - Starting gallery" )
                 app.plugin_gallery["gallery"] = PgGallery(win.surface, app.plugin_gallery["cfg"]["folder"] )
             app.plugin_gallery["gallery"].do()
     
