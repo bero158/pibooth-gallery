@@ -6,7 +6,7 @@ import time
 import os
 import pibooth
 from pibooth.utils import LOGGER
-from pggallery.pggallery import PgGallery
+from pggallery.pg.pggallery import PgGallery
 import pygame
 
 __version__ = "1.0.0"
@@ -77,6 +77,24 @@ def state_wait_exit(cfg, app, win):
     if hasattr(app,"plugin_gallery"):
         del app.plugin_gallery
 
+
+def createGallery(surface, app):
+     folder = None
+     source = None
+     url = None
+     path = app.plugin_gallery["cfg"]["folder"]
+     if path:
+        if path[:4].lower() == "http":
+               source = PgGallery.SOURCE.URL
+               url = path
+        else:
+               source = PgGallery.SOURCE.FILE
+               url = path
+        LOGGER.debug(f"{PLUGIN_NAME} - Creating gallery" )
+        gallery = PgGallery(surface, folder = folder, url = url, source = source.value )
+        return gallery
+     
+
 @pibooth.hookimpl
 def state_wait_do(app, win, events):
     if hasattr(app,"plugin_gallery"):
@@ -84,8 +102,7 @@ def state_wait_do(app, win, events):
         
         if ( now - app.plugin_gallery["start"] > app.plugin_gallery["cfg"]["delay"]):
             if not "gallery" in app.plugin_gallery:
-                LOGGER.debug(f"{PLUGIN_NAME} - Starting gallery" )
-                app.plugin_gallery["gallery"] = PgGallery(win.surface, app.plugin_gallery["cfg"]["folder"] )
+                app.plugin_gallery["gallery"] = createGallery(win.surface, app)
                 app.plugin_gallery["active"] = True
             app.plugin_gallery["gallery"].do()
     
