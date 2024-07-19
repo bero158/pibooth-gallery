@@ -20,10 +20,10 @@ aka: plugins = "/home/pi/pibooth/pibooth-gallery/pibooth_gallery.py"
 Configuration
 -------------
 
-Configure the initial delay and path to your gallery in case it's not the photobooth default folder.
+Through `pibooth`_ standard configuration dialog:
+Configure the path to your gallery in case it's not the photobooth default folder.
+Configure delay between photos.
 
-Example
--------
 
 
 .. --- Links ------------------------------------------------------------------
