@@ -176,3 +176,6 @@ cython_debug/
 
 sampledata/
 data/
+pg/data/
+pggallery/pg/data/
+pibooth-gallery/pggallery/pg/data/
