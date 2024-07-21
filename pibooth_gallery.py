@@ -67,7 +67,7 @@ def state_wait_enter(cfg, app, win):
         app.plugin_gallery = {
             "start": time.time(),
             "active": False, #informs other plugins that the gallery is active
-            "cfg": {"delay": float(cfg.get(SECTION, GALLERY_DELAY )),
+            "cfg": {"delay": float(unescape(cfg.get(SECTION, GALLERY_DELAY ))),
                     "folder":fix_abs_path(cfg.get(SECTION, GALLERY_FOLDER ))}
         }    
 
