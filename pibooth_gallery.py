@@ -5,16 +5,16 @@
 import time
 import os
 import pibooth
+import pibooth.booth
 from pibooth.utils import LOGGER
 from pggallery.pg.pggallery import PgGallery
 import pygame
-
 __version__ = "1.0.0"
 PLUGIN_NAME="pibooth-gallery"
 SECTION = 'Gallery'
 GALLERY_DELAY = 'Delay'
 GALLERY_DELAY_VAL = '30'
-GALLERY_FOLDER = 'Folder'
+GALLERY_FOLDER = 'Path'
 GALLERY_FOLDER_VAL = '~/Pictures/pibooth'
 
 def unescape(text):
@@ -79,38 +79,42 @@ def state_wait_exit(cfg, app, win):
 
 
 def createGallery(surface, app):
-     folder = None
      source = None
      url = None
      path = app.plugin_gallery["cfg"]["folder"]
      if path:
         if path[:4].lower() == "http":
                source = PgGallery.SOURCE.URL
-               url = path
         else:
-               source = PgGallery.SOURCE.FILE
-               url = path
+               source = PgGallery.SOURCE.FOLDER
         LOGGER.debug(f"{PLUGIN_NAME} - Creating gallery" )
-        gallery = PgGallery(surface, folder = folder, url = url, source = source.value )
+        gallery = PgGallery(surface, url = path, source = source.value )
         return gallery
      
-
+def closeGallery(app):
+    if "gallery" in app.plugin_gallery: #closing the gallery
+        del app.plugin_gallery["gallery"]
+        app.plugin_gallery["active"] = False
+     
 @pibooth.hookimpl
 def state_wait_do(app, win, events):
     if hasattr(app,"plugin_gallery"):
-        now = time.time()
-        
-        if ( now - app.plugin_gallery["start"] > app.plugin_gallery["cfg"]["delay"]):
-            if pygame.MOUSEBUTTONDOWN in [d.type for d in events]: #mouseclick detection
-                app.plugin_gallery["start"] = now 
-                if "gallery" in app.plugin_gallery: #closing the gallery
-                    del app.plugin_gallery["gallery"]
-                    app.plugin_gallery["active"] = False
-                    return
-                
-            if not "gallery" in app.plugin_gallery:
-                app.plugin_gallery["gallery"] = createGallery(win.surface, app)
-                app.plugin_gallery["active"] = True
-            app.plugin_gallery["gallery"].do()
-    
+        if events:
+            if (pygame.MOUSEBUTTONDOWN or pygame.USEREVENT+1) in [d.type for d in events]: #mouseclick detection
+                app.plugin_gallery["start"] = time.time()
+                closeGallery(app)
+                return
+
+            if pibooth.booth.BUTTONDOWN  in [d.type for d in events]: #button detection
+                app.plugin_gallery["start"] = time.time()
+                closeGallery(app)
+                return
+        else:        
+            # no event
             
+            now = time.time()
+            if ( now - app.plugin_gallery["start"] > app.plugin_gallery["cfg"]["delay"]):
+                if not "gallery" in app.plugin_gallery:
+                    app.plugin_gallery["gallery"] = createGallery(win.surface, app)
+                    app.plugin_gallery["active"] = True
+                app.plugin_gallery["gallery"].do()
