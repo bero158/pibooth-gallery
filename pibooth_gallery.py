@@ -101,13 +101,16 @@ def state_wait_do(app, win, events):
         now = time.time()
         
         if ( now - app.plugin_gallery["start"] > app.plugin_gallery["cfg"]["delay"]):
-            if not "gallery" in app.plugin_gallery:
-                app.plugin_gallery["gallery"] = createGallery(win.surface, app)
-                app.plugin_gallery["active"] = True
-            app.plugin_gallery["gallery"].do()
-    
             if pygame.MOUSEBUTTONDOWN in [d.type for d in events]: #mouseclick detection
                 app.plugin_gallery["start"] = now 
                 if "gallery" in app.plugin_gallery: #closing the gallery
                     del app.plugin_gallery["gallery"]
                     app.plugin_gallery["active"] = False
+                    return
+                
+            if not "gallery" in app.plugin_gallery:
+                app.plugin_gallery["gallery"] = createGallery(win.surface, app)
+                app.plugin_gallery["active"] = True
+            app.plugin_gallery["gallery"].do()
+    
+            
