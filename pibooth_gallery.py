@@ -88,7 +88,7 @@ def createGallery(surface, app):
         else:
                source = PgGallery.SOURCE.FOLDER
         LOGGER.debug(f"{PLUGIN_NAME} - Creating gallery" )
-        gallery = PgGallery(surface, url = path, source = source.value )
+        gallery = PgGallery(surface, path = path, source = source.value )
         return gallery
      
 def closeGallery(app):
