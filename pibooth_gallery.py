@@ -117,4 +117,5 @@ def state_wait_do(app, win, events):
                 if not "gallery" in app.plugin_gallery:
                     app.plugin_gallery["gallery"] = createGallery(win.surface, app)
                     app.plugin_gallery["active"] = True
+                    app.previous_animated = None #force animation stop because animation breaks the gallery.
                 app.plugin_gallery["gallery"].do()
